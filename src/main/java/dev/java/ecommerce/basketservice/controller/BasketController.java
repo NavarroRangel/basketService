@@ -6,10 +6,7 @@ import dev.java.ecommerce.basketservice.entity.Basket;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/basket")
@@ -17,6 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class BasketController {
 
     private final BasketService basketService;
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Basket> getBasket(@PathVariable String id) {
+        return ResponseEntity.ok( basketService.getBaskeyByid(id));
+
+    }
+
 
     @PostMapping
     public ResponseEntity<Basket> createBasket(@RequestBody BasketRequest request){

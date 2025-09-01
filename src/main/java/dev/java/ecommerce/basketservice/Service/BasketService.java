@@ -21,7 +21,14 @@ public class BasketService {
     private final BasketRepository basketRepository;
     private final ProductService productService;
 
+    public Basket  getBaskeyByid(String id){
+        return basketRepository
+                .findById(id)
+                .orElseThrow(()-> new IllegalArgumentException("Basket Not found"));
+    }
+
     public  Basket  createBasket(BasketRequest basketRequest) {
+
         basketRepository.findByClientAndStatus(basketRequest.clientId(),Status.OPEN)
                 .ifPresent(basket -> {
                     throw new IllegalArgumentException("Ja tem uma basket abertta");
