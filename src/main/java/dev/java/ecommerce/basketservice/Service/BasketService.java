@@ -22,15 +22,19 @@ public class BasketService {
     private final ProductService productService;
 
     public  Basket  createBasket(BasketRequest basketRequest) {
+        basketRepository.findByClientAndStatus(basketRequest.clientId(),Status.OPEN)
+                .ifPresent(basket -> {
+                    throw new IllegalArgumentException("Ja tem uma basket abertta");
+                });
 
         List<Product> products = new ArrayList<>();
-        basketRequest.products().forEach(product -> {
-            PlatziProductResponse platziProductResponse = productService.getProductById(product.id());
+        basketRequest.products().forEach(productRequest -> {
+            PlatziProductResponse platziProductResponse = productService.getProductById(productRequest.id());
             products.add(Product.builder()
                     .id(platziProductResponse.id())
                     .title(platziProductResponse.title())
                     .price(platziProductResponse.price())
-                    .quantity(platziProductResponse.quantity())
+                    .quantity(productRequest.quantity())
                     .build());
         });
 
