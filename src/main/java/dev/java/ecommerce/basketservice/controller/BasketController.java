@@ -2,6 +2,7 @@ package dev.java.ecommerce.basketservice.controller;
 
 import dev.java.ecommerce.basketservice.Service.BasketService;
 import dev.java.ecommerce.basketservice.controller.request.BasketRequest;
+import dev.java.ecommerce.basketservice.controller.request.PaymentRequest;
 import dev.java.ecommerce.basketservice.entity.Basket;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -29,5 +30,10 @@ public class BasketController {
     @PostMapping
     public ResponseEntity<Basket> createBasket(@RequestBody BasketRequest request){
         return ResponseEntity.status(HttpStatus.CREATED).body(basketService.createBasket(request));
+    }
+
+    @PutMapping("{id}/payment")
+    public ResponseEntity<Basket> payBasket(@PathVariable String id, @RequestBody PaymentRequest paymentRequest) {
+        return  ResponseEntity.status(HttpStatus.OK).body(basketService.payBasket(id,paymentRequest));
     }
 }
