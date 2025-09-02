@@ -9,11 +9,7 @@ import dev.java.ecommerce.basketservice.entity.Product;
 import dev.java.ecommerce.basketservice.entity.Status;
 import dev.java.ecommerce.basketservice.repository.BasketRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -39,17 +35,7 @@ public class BasketService {
                     throw new IllegalArgumentException("Ja tem uma basket abertta");
                 });
 
-        List<Product> products = new ArrayList<>();
-        basketRequest.products().forEach(productRequest -> {
-            PlatziProductResponse platziProductResponse = productService.getProductById(productRequest.id());
-            products.add(Product.builder()
-                    .id(platziProductResponse.id())
-                    .title(platziProductResponse.title())
-                    .price(platziProductResponse.price())
-                    .quantity(productRequest.quantity())
-                    .build());
-        });
-
+        List<Product> products = getProducts(basketRequest);
 
 
         Basket basket = Basket.builder()
@@ -61,19 +47,12 @@ public class BasketService {
         return basketRepository.save(basket);
     }
 
+
+
     public Basket updateBasket(String basketid, BasketRequest basketRequest) {
             Basket savedBasket = getBaskeyByid(basketid);
-            List<Product> products = new ArrayList<>();
-            basketRequest.products().forEach(productRequest -> {
-                PlatziProductResponse platziProductResponse = productService.getProductById(productRequest.id());
-                products.add(Product.builder()
-                        .id(platziProductResponse.id())
-                        .title(platziProductResponse.title())
-                        .price(platziProductResponse.price())
-                        .quantity(productRequest.quantity())
-                        .build());
-            });
-            savedBasket.setProducts(products);
+        List<Product> products = getProducts(basketRequest);
+        savedBasket.setProducts(products);
             savedBasket.caculateTotalPrice();
             return basketRepository.save(savedBasket);
     }
@@ -87,5 +66,18 @@ public class BasketService {
 
     public void deleteBasket(String basketid) {
         basketRepository.deleteById(basketid);
+    }
+    private List<Product> getProducts(BasketRequest basketRequest) {
+        List<Product> products = new ArrayList<>();
+        basketRequest.products().forEach(productRequest -> {
+            PlatziProductResponse platziProductResponse = productService.getProductById(productRequest.id());
+            products.add(Product.builder()
+                    .id(platziProductResponse.id())
+                    .title(platziProductResponse.title())
+                    .price(platziProductResponse.price())
+                    .quantity(productRequest.quantity())
+                    .build());
+        });
+        return products;
     }
 }
