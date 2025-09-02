@@ -10,7 +10,10 @@ import dev.java.ecommerce.basketservice.entity.Status;
 import dev.java.ecommerce.basketservice.repository.BasketRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -80,5 +83,9 @@ public class BasketService {
         savedBasket.setPaymentMethod(paymentRequest.getPaymentMethod());
         savedBasket.setStatus(Status.SOLD);
         return basketRepository.save(savedBasket);
+    }
+
+    public void deleteBasket(String basketid) {
+        basketRepository.deleteById(basketid);
     }
 }
